@@ -1,0 +1,6 @@
+name = Module OOP
+description = Adds OOP support for D7 modules.
+core = 7.x
+version = VERSION
+
+files[] = 'classes/Module.class.php'
