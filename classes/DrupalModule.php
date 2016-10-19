@@ -173,6 +173,7 @@ class DrupalModule {
    * Throw a watchdog exception.
    *
    * @param \Exception $e
+   *   The exception to report.
    */
   protected function watchdogException(Exception $e) {
     watchdog_exception('drupaloop', $e);
