@@ -27,7 +27,7 @@ class DrupalModule {
   /**
    * Load an module object from memory so it doesn't have to be reloaded.
    *
-   * Module class names must follow the pattern of converting the module moduleName
+   * Module class names must follow the pattern of converting the module name
    * from snake_case to CamelCase and appending 'Module' to it.
    *
    * Ex. Module 'awesome_sauce' has the class 'AwesomeSauceModule'
