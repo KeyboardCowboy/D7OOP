@@ -1,4 +1,4 @@
-name = Drupal OOP
+moduleName = Drupal OOP
 description = Adds OOP support for D7 modules.
 core = 7.x
 version = VERSION
