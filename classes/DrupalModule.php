@@ -35,7 +35,7 @@ class DrupalModule {
    * @param string $module_name
    *   The machine moduleName of the module.
    *
-   * @return object|bool
+   * @return \DrupalModule|bool
    *   A module object or FALSE if we can't instantiate.
    *
    * @throws \DrupalOopMissingClassException
