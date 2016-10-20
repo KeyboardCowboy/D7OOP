@@ -41,14 +41,14 @@ class DrupalModuleTest extends TestCase {
    * Test module to class name conversion.
    */
   public function testModToClass() {
-    $this->assertEquals('SimpleModule', DrupalModule::modToClass('simple'));
-    $this->assertEquals('OneUnderscoreModule', DrupalModule::modToClass('one_underscore'));
-    $this->assertEquals('BadCamelCasingModule', DrupalModule::modToClass('bad_camelCasing'));
-    $this->assertEquals('WhySpacesModule', DrupalModule::modToClass('why spaces'));
+    $this->assertEquals('SimpleModule', DrupalModuleMockModule::modToClass('simple'));
+    $this->assertEquals('OneUnderscoreModule', DrupalModuleMockModule::modToClass('one_underscore'));
+    $this->assertEquals('BadCamelCasingModule', DrupalModuleMockModule::modToClass('bad_camelCasing'));
+    $this->assertEquals('WhySpacesModule', DrupalModuleMockModule::modToClass('why spaces'));
 
     // Don't try to accommodate every case.  Make the developer use the right
     // format.
-    $this->assertEquals('Or-hyphensModule', DrupalModule::modToClass('or-hyphens'));
+    $this->assertEquals('Or-hyphensModule', DrupalModuleMockModule::modToClass('or-hyphens'));
   }
 
   /**

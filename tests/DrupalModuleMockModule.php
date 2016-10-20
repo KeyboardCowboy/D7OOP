@@ -18,4 +18,18 @@ class DrupalModuleMockModule extends DrupalModule {
     'var2' => 'var2_value',
   );
 
+  /**
+   * {@inheritdoc}
+   */
+  public static function modToClass($mod_name) {
+    return parent::modToClass($mod_name);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function varGet($var_name) {
+    return parent::varGet($var_name);
+  }
+
 }

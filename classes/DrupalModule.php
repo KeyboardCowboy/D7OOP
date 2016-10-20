@@ -94,7 +94,7 @@ class DrupalModule {
    * @see $this->variables
    * @see variable_get()
    */
-  public function varGet($var_name) {
+  protected function varGet($var_name) {
     $default = isset($this->variables[$var_name]) ? $this->variables[$var_name] : NULL;
 
     return variable_get($this->getSystemVarName($var_name), $default);
@@ -148,7 +148,7 @@ class DrupalModule {
    * @return string
    *   The full, prefixed variable name.
    */
-  public function getSystemVarName($var_name) {
+  protected function getSystemVarName($var_name) {
     return "{$this->moduleName}_{$var_name}";
   }
 
@@ -161,7 +161,7 @@ class DrupalModule {
    * @return mixed|string
    *   Equivalent class moduleName.
    */
-  public static function modToClass($mod_name) {
+  protected static function modToClass($mod_name) {
     $class_name = str_replace('_', ' ', $mod_name);
     $class_name = ucwords($class_name);
     $class_name = str_replace(' ', '', $class_name);
