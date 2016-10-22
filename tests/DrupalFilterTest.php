@@ -28,23 +28,24 @@ class DrupalFilterTest extends TestCase {
    */
   public function testInfo() {
     $filters = array();
+    $expected = array(
+      'title' => 'Test Filter',
+      'description' => 'Test description.',
+      'prepare callback' => '_drupaloop_filter_prepare',
+      'process callback' => '_drupaloop_filter_process',
+      'settings callback' => '_drupaloop_filter_settings',
+      'tips callback' => '_drupaloop_filter_tips',
+      'default settings' => array(
+        'test_setting' => 1,
+      ),
+      'cache' => TRUE,
+      'weight' => 0,
+    );
 
     MockDrupaloopFilter::load()->addFilter($filters);
 
     $this->assertArrayHasKey('mock_drupaloop', $filters, 'Filter machine name is not parsing properly.');
-
-    $this->assertEquals('Test Filter', $filters['mock_drupaloop']['title'], 'Filter info not merging properly.');
-    $this->assertEquals('Test description.', $filters['mock_drupaloop']['description'], 'Filter info not merging properly.');
-
-    // Callbacks should not be overridden.
-    $this->assertEquals('_drupaloop_filter_prepare', $filters['mock_drupaloop']['prepare callback'], 'Filter info not merging properly.');
-    $this->assertEquals('_drupaloop_filter_process', $filters['mock_drupaloop']['process callback'], 'Filter info not merging properly.');
-    $this->assertEquals('_drupaloop_filter_settings', $filters['mock_drupaloop']['settings callback'], 'Filter info not merging properly.');
-    $this->assertEquals('_drupaloop_filter_tips', $filters['mock_drupaloop']['tips callback'], 'Filter info not merging properly.');
-
-    $this->assertEquals(0, $filters['mock_drupaloop']['weight'], 'Filter info not merging properly.');
-    $this->assertEquals(1, $filters['mock_drupaloop']['default settings']['test_setting'], 'Filter info not merging properly.');
-    $this->assertTrue($filters['mock_drupaloop']['cache'], 'Filter info not merging properly.');
+    $this->assertEquals($expected, $filters['mock_drupaloop'], 'Filter info is not merging properly.');
   }
 
   /**
