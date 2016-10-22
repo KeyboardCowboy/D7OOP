@@ -3,4 +3,4 @@ description = Adds OOP support for D7 modules.
 core = 7.x
 version = VERSION
 
-files[] = 'classes/DrupalModule.class.php'
+files[] = 'classes/DrupalModule.php'
