@@ -4,6 +4,8 @@
  * Contains \DrupalModule.
  */
 
+require_once __DIR__ . '/DynamicClass.php';
+
 /**
  * Base class for a Drupal module.
  *

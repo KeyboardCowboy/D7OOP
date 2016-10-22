@@ -4,6 +4,8 @@
  * Contains \DrupalInputFilter.
  */
 
+require_once __DIR__ . '/DynamicClass.php';
+
 /**
  * Objectifies the input filter system.
  *
