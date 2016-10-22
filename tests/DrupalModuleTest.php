@@ -6,7 +6,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/DrupalModuleMockModule.php';
+require_once __DIR__ . '/mocks/DrupalModuleMockModule.php';
 
 /**
  * Test the base DrupalModule class.

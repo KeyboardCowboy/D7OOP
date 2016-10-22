@@ -4,7 +4,7 @@
  * Contains \DrupalModuleMockModule.
  */
 
-require_once __DIR__ . '/../classes/DrupalModule.php';
+require_once __DIR__ . '/../../classes/DrupalModule.php';
 
 /**
  * Mock class for testing DrupalModule class.
