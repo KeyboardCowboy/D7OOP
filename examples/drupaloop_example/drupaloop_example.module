@@ -1,0 +1,26 @@
+<?php
+/**
+ * @file
+ * DrupalOOP example code.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function drupaloop_example_init() {
+  $module = DrupaloopExampleModule::load();
+
+  drupal_set_message($module->varGet('demo_message'), 'status', FALSE);
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function drupaloop_example_filter_info() {
+  $filters = array();
+
+  // Add the Drupal capitalizer filter.
+  DrupaloopExampleDrupalCapFilter::load()->addFilter($filters);
+
+  return $filters;
+}

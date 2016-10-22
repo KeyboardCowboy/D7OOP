@@ -1,0 +1,10 @@
+name = DrupalOOP Example
+description = Example implementation of the DrupalOOP system.
+core = 7.x
+version = VERSION
+package = Development
+
+dependencies[] = drupaloop
+
+files[] = lib/DrupaloopExampleModule.php
+files[] = filters/DrupaloopExampleDrupalCapFilter.php

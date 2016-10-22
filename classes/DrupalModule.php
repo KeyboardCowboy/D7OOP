@@ -6,64 +6,33 @@
 
 /**
  * Base class for a Drupal module.
+ *
+ * Module class names must follow the pattern of converting the module name
+ * from snake_case to CamelCase and appending 'Module' to it.
+ *
+ * Ex. Module 'awesome_sauce' has the class 'AwesomeSauceModule'
  */
-class DrupalModule {
-  // The Drupal module moduleName.  Should be set by each extending class.
-  protected $moduleName;
+abstract class DrupalModule implements DynamicClassInterface {
+  use DynamicClass;
+
+  // The Drupal machine name of the object.
+  protected $machineName;
 
   // Register variable names and their default values.
   protected $variables = array();
 
   /**
    * Module constructor.
-   *
-   * @param string $module_name
-   *   A Drupal module machine name.
    */
-  public function __construct($module_name) {
-    $this->moduleName = $module_name;
+  public function __construct() {
+    $this->setMachineName();
   }
 
   /**
-   * Load an module object from memory so it doesn't have to be reloaded.
-   *
-   * Module class names must follow the pattern of converting the module name
-   * from snake_case to CamelCase and appending 'Module' to it.
-   *
-   * Ex. Module 'awesome_sauce' has the class 'AwesomeSauceModule'
-   *
-   * @param string $module_name
-   *   The machine moduleName of the module.
-   *
-   * @return \DrupalModule|bool
-   *   A module object or FALSE if we can't instantiate.
-   *
-   * @throws \DrupalOopMissingClassException
-   *   If the module class cannot be found.
+   * {@inheritdoc}
    */
-  public static function load($module_name) {
-    $module_class = DrupalModule::modToClass($module_name);
-
-    // Attempt to load an existing module object from memory.
-    $module = &drupal_static("DrupalOOP:{$module_class}");
-
-    // If we don't have a module object, create one.
-    if (!$module) {
-      if (class_exists($module_class)) {
-        $module = new $module_class($module_name);
-      }
-      else {
-        $module = FALSE;
-        $vars = array(
-          '@class' => $module_class,
-          '@mod' => $module_name,
-        );
-
-        throw new DrupalOopMissingClassException(t("Class @class not found for module @mod.", $vars));
-      }
-    }
-
-    return $module;
+  final public static function classBase() {
+    return 'Module';
   }
 
   /**
@@ -76,7 +45,7 @@ class DrupalModule {
     static $path;
 
     if (empty($path)) {
-      $path = drupal_get_path('module', $this->moduleName);
+      $path = drupal_get_path('module', $this->machineName);
     }
 
     return $path;
@@ -94,7 +63,7 @@ class DrupalModule {
    * @see $this->variables
    * @see variable_get()
    */
-  protected function varGet($var_name) {
+  public function varGet($var_name) {
     $default = isset($this->variables[$var_name]) ? $this->variables[$var_name] : NULL;
 
     return variable_get($this->getSystemVarName($var_name), $default);
@@ -149,24 +118,7 @@ class DrupalModule {
    *   The full, prefixed variable name.
    */
   protected function getSystemVarName($var_name) {
-    return "{$this->moduleName}_{$var_name}";
-  }
-
-  /**
-   * Convert a module machine moduleName to an appropriate class moduleName.
-   *
-   * @param string $mod_name
-   *   Module machine moduleName.
-   *
-   * @return mixed|string
-   *   Equivalent class moduleName.
-   */
-  protected static function modToClass($mod_name) {
-    $class_name = str_replace('_', ' ', $mod_name);
-    $class_name = ucwords($class_name);
-    $class_name = str_replace(' ', '', $class_name);
-
-    return "{$class_name}Module";
+    return "{$this->machineName}_{$var_name}";
   }
 
   /**

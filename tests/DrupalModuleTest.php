@@ -18,7 +18,7 @@ class DrupalModuleTest extends TestCase {
    * {@inheritdoc}
    */
   public function setUp() {
-    $this->module = DrupalModule::load('drupal_module_mock');
+    $this->module = DrupalModuleMockModule::load();
   }
 
   /**
@@ -30,36 +30,44 @@ class DrupalModuleTest extends TestCase {
   }
 
   /**
-   * Test for bad module class names.
+   * Ensure machine names are being properly extracted.
    */
-  public function testBadClass() {
-    $this->expectException('DrupalOopMissingClassException');
-    DrupalModule::load('non_existent');
+  public function testGetMachineName() {
+    // Make sure they are derived properly.
+    $this->assertEquals('system', SystemModule::load()->getMachineName(), 'Machine name is not being derived properly.');
+    $this->assertEquals('field_ui', FieldUiModule::load()->getMachineName(), 'Machine name is not being derived properly.');
+    $this->assertEquals('awesome_sauce', AwesomeSauceMod::load()->getMachineName(), 'Machine name is not being derived properly.');
   }
 
   /**
-   * Test module to class name conversion.
+   * Ensure class names are being properly constructed from machine names.
    */
-  public function testModToClass() {
-    $this->assertEquals('SimpleModule', DrupalModuleMockModule::modToClass('simple'));
-    $this->assertEquals('OneUnderscoreModule', DrupalModuleMockModule::modToClass('one_underscore'));
-    $this->assertEquals('BadCamelCasingModule', DrupalModuleMockModule::modToClass('bad_camelCasing'));
-    $this->assertEquals('WhySpacesModule', DrupalModuleMockModule::modToClass('why spaces'));
+  public function testBuildClassName() {
+    $class = DrupalModule::buildClassName('system');
+    if (!class_exists($class)) {
+      $this->fail("Class name improperly formed.");
+    }
 
-    // Don't try to accommodate every case.  Make the developer use the right
-    // format.
-    $this->assertEquals('Or-hyphensModule', DrupalModuleMockModule::modToClass('or-hyphens'));
+    $class = DrupalModule::buildClassName('field_ui');
+    if (!class_exists($class)) {
+      $this->fail("Class name improperly formed.");
+    }
+
+    $class = DrupalModule::buildClassName('awesome_sauce');
+    if (class_exists($class)) {
+      $this->fail("Class name improperly formed.");
+    }
   }
 
   /**
    * Test that we are returning proper paths.
    */
   public function testPath() {
-    $system_module = DrupalModule::load('system');
-    $node_module = DrupalModule::load('node');
+    $system_module = SystemModule::load();
+    $node_module = FieldUiModule::load();
 
     $this->assertEquals('modules/system', $system_module->path(), 'Invalid path for System module.');
-    $this->assertEquals('modules/node', $node_module->path(), 'Invalid path for Node module.');
+    $this->assertEquals('modules/field_ui', $node_module->path(), 'Invalid path for Field UI module.');
   }
 
   /**
@@ -98,6 +106,11 @@ class SystemModule extends DrupalModule {}
 
 
 /**
- * Stub class to simulate the node module.
+ * Stub class to simulate the Field UI module.
  */
-class NodeModule extends DrupalModule {}
+class FieldUiModule extends DrupalModule {}
+
+/**
+ * Stub class to simulate a poorly named class.
+ */
+class AwesomeSauceMod extends DrupalModule {}

@@ -1,6 +1,9 @@
-moduleName = Drupal OOP
+name = Drupal OOP
 description = Adds OOP support for D7 modules.
 core = 7.x
 version = VERSION
+package = Development
 
-files[] = 'classes/DrupalModule.class.php'
+files[] = 'classes/DynamicClass.php'
+files[] = 'classes/DrupalModule.php'
+files[] = 'classes/DrupalFilter.php'
