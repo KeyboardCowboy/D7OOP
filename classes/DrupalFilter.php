@@ -25,10 +25,10 @@ abstract class DrupalFilter implements DynamicClassInterface {
 
   // Our custom mapping callbacks.  Don't let these be overridden.
   private static $callbacks = array(
-    'prepare callback' => '_cisco_core_filter_prepare',
-    'process callback' => '_cisco_core_filter_process',
-    'settings callback' => '_cisco_core_filter_settings',
-    'tips callback' => '_cisco_core_filter_tips',
+    'prepare callback' => '_drupaloop_filter_prepare',
+    'process callback' => '_drupaloop_filter_process',
+    'settings callback' => '_drupaloop_filter_settings',
+    'tips callback' => '_drupaloop_filter_tips',
   );
 
   /**
@@ -112,7 +112,7 @@ abstract class DrupalFilter implements DynamicClassInterface {
 /**
  * Filter Prepare callback.
  */
-function _cisco_core_filter_prepare($text, $filter, $format, $langcode, $cache, $cache_id) {
+function _drupaloop_filter_prepare($text, $filter, $format, $langcode, $cache, $cache_id) {
   $class = DrupalFilter::buildClassName($filter->name);
   return $class::load()->prepare($text, $filter, $format, $langcode, $cache, $cache_id);
 }
@@ -120,7 +120,7 @@ function _cisco_core_filter_prepare($text, $filter, $format, $langcode, $cache, 
 /**
  * Filter process callback.
  */
-function _cisco_core_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+function _drupaloop_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   $class = DrupalFilter::buildClassName($filter->name);
   return $class::load()->process($text, $filter, $format, $langcode, $cache, $cache_id);
 }
@@ -128,7 +128,7 @@ function _cisco_core_filter_process($text, $filter, $format, $langcode, $cache, 
 /**
  * Filter settings callback.
  */
-function _cisco_core_filter_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
+function _drupaloop_filter_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
   $class = DrupalFilter::buildClassName($filter->name);
   return $class::load()->settingsForm($form, $form_state, $filter, $format, $defaults, $filters);
 }
@@ -136,7 +136,7 @@ function _cisco_core_filter_settings($form, &$form_state, $filter, $format, $def
 /**
  * Filter tips callback.
  */
-function _cisco_core_filter_tips($filter, $format, $long) {
+function _drupaloop_filter_tips($filter, $format, $long) {
   $class = DrupalFilter::buildClassName($filter->name);
   return $class::load()->tips($filter, $format, $long);
 }
