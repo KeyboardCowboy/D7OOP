@@ -124,6 +124,16 @@ abstract class DrupalModule implements DynamicClassInterface {
   }
 
   /**
+   * Return the active user object.
+   *
+   * @return \stdClass
+   *   The global user object.
+   */
+  protected static function activeUser() {
+    return $GLOBALS['user'];
+  }
+
+  /**
    * Throw a watchdog exception.
    *
    * @param \Exception $e
