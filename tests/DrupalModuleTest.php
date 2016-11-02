@@ -43,20 +43,18 @@ class DrupalModuleTest extends TestCase {
    * Ensure class names are being properly constructed from machine names.
    */
   public function testBuildClassName() {
-    $class = DrupalModule::buildClassName('system');
+    $class = DrupalModule::getClass('system');
     if (!class_exists($class)) {
       $this->fail("Class name improperly formed.");
     }
 
-    $class = DrupalModule::buildClassName('field_ui');
+    $class = DrupalModule::getClass('field_ui');
     if (!class_exists($class)) {
       $this->fail("Class name improperly formed.");
     }
 
-    $class = DrupalModule::buildClassName('awesome_sauce');
-    if (class_exists($class)) {
-      $this->fail("Class name improperly formed.");
-    }
+    $this->expectException('DrupalOopMissingClassException');
+    DrupalModule::getClass('awesome_sauce');
   }
 
   /**

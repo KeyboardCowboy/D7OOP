@@ -7,7 +7,9 @@
 /**
  * Remove all vowels from text.
  */
-class DrupaloopExampleDrupalCapFilter extends DrupalFilter {
+class DrupaloopExampleDrupalCapFilter extends DrupalFilter implements DrupalModuleDependencyInterface {
+  use DrupaloopExampleTrait;
+
   /**
    * {@inheritdoc}
    */

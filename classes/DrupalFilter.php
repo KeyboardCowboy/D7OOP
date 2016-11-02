@@ -11,8 +11,8 @@ require_once __DIR__ . '/DynamicClass.php';
  *
  * Individual filters can extend this class to implement their own filters.
  */
-abstract class DrupalFilter implements DynamicClassInterface {
-  use DynamicClass;
+abstract class DrupalFilter extends DynamicClass implements DynamicClassInterface {
+  use ModuleDependency;
 
   // Default filter info that will be inherited by subclasses.
   private static $defaultInfo = array(
@@ -32,16 +32,9 @@ abstract class DrupalFilter implements DynamicClassInterface {
   );
 
   /**
-   * DrupalInputFilter constructor.
-   */
-  public function __construct() {
-    $this->setMachineName();
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public static function classBase() {
+  final public static function classBase() {
     return 'Filter';
   }
 
@@ -113,30 +106,26 @@ abstract class DrupalFilter implements DynamicClassInterface {
  * Filter Prepare callback.
  */
 function _drupaloop_filter_prepare($text, $filter, $format, $langcode, $cache, $cache_id) {
-  $class = DrupalFilter::buildClassName($filter->name);
-  return $class::load()->prepare($text, $filter, $format, $langcode, $cache, $cache_id);
+  return DrupalFilter::load($filter->name)->prepare($text, $filter, $format, $langcode, $cache, $cache_id);
 }
 
 /**
  * Filter process callback.
  */
 function _drupaloop_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
-  $class = DrupalFilter::buildClassName($filter->name);
-  return $class::load()->process($text, $filter, $format, $langcode, $cache, $cache_id);
+  return DrupalFilter::load($filter->name)->process($text, $filter, $format, $langcode, $cache, $cache_id);
 }
 
 /**
  * Filter settings callback.
  */
 function _drupaloop_filter_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
-  $class = DrupalFilter::buildClassName($filter->name);
-  return $class::load()->settingsForm($form, $form_state, $filter, $format, $defaults, $filters);
+  return DrupalFilter::load($filter->name)->settingsForm($form, $form_state, $filter, $format, $defaults, $filters);
 }
 
 /**
  * Filter tips callback.
  */
 function _drupaloop_filter_tips($filter, $format, $long) {
-  $class = DrupalFilter::buildClassName($filter->name);
-  return $class::load()->tips($filter, $format, $long);
+  return DrupalFilter::load($filter->name)->tips($filter, $format, $long);
 }

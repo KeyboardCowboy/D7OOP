@@ -7,4 +7,5 @@ package = Development
 dependencies[] = drupaloop
 
 files[] = lib/DrupaloopExampleModule.php
+files[] = blocks/DrupaloopExampleWelcomeBlock.php
 files[] = filters/DrupaloopExampleDrupalCapFilter.php

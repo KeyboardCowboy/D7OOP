@@ -14,21 +14,9 @@ require_once __DIR__ . '/DynamicClass.php';
  *
  * Ex. Module 'awesome_sauce' has the class 'AwesomeSauceModule'
  */
-abstract class DrupalModule implements DynamicClassInterface {
-  use DynamicClass;
-
-  // The Drupal machine name of the object.
-  protected $machineName;
-
+abstract class DrupalModule extends DynamicClass implements DynamicClassInterface {
   // Register variable names and their default values.
   protected $variables = array();
-
-  /**
-   * Module constructor.
-   */
-  public function __construct() {
-    $this->setMachineName();
-  }
 
   /**
    * {@inheritdoc}
@@ -124,13 +112,21 @@ abstract class DrupalModule implements DynamicClassInterface {
   }
 
   /**
-   * Return the active user object.
+   * Load a block by its delta.
    *
-   * @return \stdClass
-   *   The global user object.
+   * A blocks machine name is [ModuleName]_[Delta].  A module's machine name is
+   * the name of the module.
+   *
+   * @param string $delta
+   *   The delta of the block to get.
+   *
+   * @return DrupalBlock
+   *   The DrupalBlock object.
    */
-  protected static function activeUser() {
-    return $GLOBALS['user'];
+  public function loadBlock($delta) {
+    $block_machine_name = "{$this->machineName}_{$delta}";
+
+    return DrupalBlock::load($block_machine_name);
   }
 
   /**
@@ -143,6 +139,31 @@ abstract class DrupalModule implements DynamicClassInterface {
     watchdog_exception('drupaloop', $e);
   }
 
+}
+
+/**
+ * Interface DrupalModuleInterface.
+ *
+ * @todo: Fill this out for typehinting?  Do the same for blocks and filters?
+ */
+interface DrupalModuleInterface {
+  public function varGet($var_name);
+  public function varSet($var_name, $value);
+}
+
+/**
+ * Interface DrupalModuleDependencyInterface.
+ *
+ * Provide rules for classes that are dependent on a module.
+ */
+interface DrupalModuleDependencyInterface {
+  /**
+   * Get the module name this class belongs too.
+   *
+   * @return string
+   *   A module name.
+   */
+  public static function moduleName();
 }
 
 /**

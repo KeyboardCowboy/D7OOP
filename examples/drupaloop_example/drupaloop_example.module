@@ -19,8 +19,48 @@ function drupaloop_example_init() {
 function drupaloop_example_filter_info() {
   $filters = array();
 
-  // Add the Drupal capitalizer filter.
+  // Register the Drupal Capitalizer filter.
   DrupaloopExampleDrupalCapFilter::load()->addFilter($filters);
 
   return $filters;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function drupaloop_example_block_info() {
+  $blocks = array();
+
+  // Register the welcome block.
+  DrupaloopExampleWelcomeBlock::load()->addBlock($blocks);
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function drupaloop_example_block_view($delta = '') {
+  // This is all we need if all our blocks are objects.
+  if ($block = DrupaloopExampleModule::load()->loadBlock($delta)) {
+    return $block->view();
+  }
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function drupaloop_example_block_configure($delta = '') {
+  if ($block = DrupaloopExampleModule::load()->loadBlock($delta)) {
+    return $block->form();
+  }
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function drupaloop_example_block_save($delta = '', $edit = array()) {
+  if ($block =DrupaloopExampleModule::load()->loadBlock($delta)) {
+    $block->save($edit);
+  }
 }

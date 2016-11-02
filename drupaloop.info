@@ -5,5 +5,6 @@ version = VERSION
 package = Development
 
 files[] = 'classes/DynamicClass.php'
-files[] = 'classes/DrupalModule.php'
+files[] = 'classes/DrupalBlock.php'
 files[] = 'classes/DrupalFilter.php'
+files[] = 'classes/DrupalModule.php'
