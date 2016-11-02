@@ -167,8 +167,21 @@ interface ModuleDependencyInterface {
    */
   public static function moduleName();
 
-  public function setModule($module);
+  /**
+   * Set the module that owns an object.
+   *
+   * @param \DrupalModule $module
+   *   A DrupalModule object or derivative.
+   */
+  public function setModule(DrupalModule $module);
 
+  /**
+   * Get the Drupal module object that owns this object.
+   *
+   * @return DrupalModule
+   *   The Drupal module object that owns this object.
+   */
+  public function module();
 }
 
 /**
@@ -214,20 +227,16 @@ trait ModuleDependency {
   }
 
   /**
-   * Set the module that owns an object.
-   *
-   * @param \DrupalModule $module
-   *   A DrupalModule object or derivative.
+   * {@inheritdoc}
    */
   public function setModule(DrupalModule $module) {
     $this->module = $module;
   }
 
   /**
-   * @return DrupalModule
-   *   The Drupal module object that owns this object.
+   * {@inheritdoc}
    */
-  protected function module() {
+  public function module() {
     return $this->module;
   }
 
