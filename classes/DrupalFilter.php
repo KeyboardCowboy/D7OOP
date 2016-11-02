@@ -11,7 +11,7 @@ require_once __DIR__ . '/DynamicClass.php';
  *
  * Individual filters can extend this class to implement their own filters.
  */
-abstract class DrupalFilter extends DynamicClass implements DynamicClassInterface {
+abstract class DrupalFilter extends DynamicClass implements DynamicClassInterface, ModuleDependencyInterface {
   use ModuleDependency;
 
   // Default filter info that will be inherited by subclasses.

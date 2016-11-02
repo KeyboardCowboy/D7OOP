@@ -7,8 +7,13 @@
 /**
  * Create a standard welcome block.
  */
-class DrupaloopExampleWelcomeBlock extends DrupalBlock implements DrupalModuleDependencyInterface {
-  use DrupaloopExampleTrait;
+class DrupaloopExampleWelcomeBlock extends DrupalBlock {
+  /**
+   * {@inheritdoc}
+   */
+  public static function moduleName() {
+    return 'drupaloop_example';
+  }
 
   /**
    * {@inheritdoc}

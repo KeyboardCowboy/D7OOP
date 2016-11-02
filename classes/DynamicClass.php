@@ -74,13 +74,20 @@ abstract class DynamicClass {
       }
     }
     else {
-      // Instantiate this object.
-      if (!isset($instance)) {
-        $instance = new static();
-      }
+      $instance = new static();
     }
 
     return $instance;
+  }
+
+  /**
+   * Get the machine name for this object.
+   *
+   * @return string
+   *   The machine name.
+   */
+  public function getMachineName() {
+    return $this->machineName;
   }
 
   /**
@@ -100,16 +107,6 @@ abstract class DynamicClass {
     $this->machineName = strtolower(implode('_', $pieces));
   }
 
-  /**
-   * Get the machine name for this object.
-   *
-   * @return string
-   *   The machine name.
-   */
-  public function getMachineName() {
-    return $this->machineName;
-  }
-
 }
 
 /**
@@ -126,19 +123,4 @@ interface DynamicClassInterface {
    *   The object base name.
    */
   public static function classBase();
-}
-
-/**
- * Custom functionality for classes that depend on modules to exits.
- */
-trait ModuleDependency {
-  /**
-   * Get the module object for DrupalOop objects.
-   *
-   * @return DrupalModule
-   */
-  protected static function module() {
-    return DrupalModule::load(static::moduleName());
-  }
-
 }

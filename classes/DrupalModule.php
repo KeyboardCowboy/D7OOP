@@ -114,7 +114,7 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
   /**
    * Load a block by its delta.
    *
-   * A blocks machine name is [ModuleName]_[Delta].  A module's machine name is
+   * A block's machine name is [ModuleName]_[Delta].  A module's machine name is
    * the name of the module.
    *
    * @param string $delta
@@ -125,8 +125,20 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
    */
   public function loadBlock($delta) {
     $block_machine_name = "{$this->machineName}_{$delta}";
-
     return DrupalBlock::load($block_machine_name);
+  }
+
+  /**
+   * Load a filter by it's machine_name.
+   *
+   * @param string $machine_name
+   *   The machine_name of the filter to get.
+   *
+   * @return DrupalFilter
+   *   The DrupalFilter object.
+   */
+  public function loadFilter($machine_name) {
+    return DrupalFilter::load($machine_name);
   }
 
   /**
@@ -142,28 +154,83 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
 }
 
 /**
- * Interface DrupalModuleInterface.
+ * Interface ModuleDependencyInterface.
  *
- * @todo: Fill this out for typehinting?  Do the same for blocks and filters?
+ * Required methods for classes that are owned by modules.
  */
-interface DrupalModuleInterface {
-  public function varGet($var_name);
-  public function varSet($var_name, $value);
+interface ModuleDependencyInterface {
+  /**
+   * Register an object to its module.
+   *
+   * @return string
+   *   The name of the module that owns the class.
+   */
+  public static function moduleName();
+
+  public function setModule($module);
+
 }
 
 /**
- * Interface DrupalModuleDependencyInterface.
- *
- * Provide rules for classes that are dependent on a module.
+ * Custom functionality for classes that depend on modules to exits.
  */
-interface DrupalModuleDependencyInterface {
+trait ModuleDependency {
+  // The Drupal module object that owns this class.
+  private $module;
+
   /**
-   * Get the module name this class belongs too.
+   * Override the default loader.
    *
-   * @return string
-   *   A module name.
+   * This
+   *
+   * @param string $machine_name
+   *   Instantiate an object by passing its machine name into static::load().
+   *
+   * @return static
+   *   A module object.
    */
-  public static function moduleName();
+  public static function load($machine_name = NULL) {
+    static $instance;
+
+    // Instantiate an object by its machine name.
+    if (!empty($machine_name)) {
+      try {
+        $class = static::getClass($machine_name);
+        return $class::load();
+      }
+      catch (DrupalOopMissingClassException $e) {
+        watchdog_exception('drupaloop', $e);
+      }
+    }
+    else {
+      // Instantiate this object.
+      if (!isset($instance)) {
+        $instance = new static();
+        $instance->setModule(DrupalModule::load(static::moduleName()));
+      }
+    }
+
+    return $instance;
+  }
+
+  /**
+   * Set the module that owns an object.
+   *
+   * @param \DrupalModule $module
+   *   A DrupalModule object or derivative.
+   */
+  public function setModule(DrupalModule $module) {
+    $this->module = $module;
+  }
+
+  /**
+   * @return DrupalModule
+   *   The Drupal module object that owns this object.
+   */
+  protected function module() {
+    return $this->module;
+  }
+
 }
 
 /**

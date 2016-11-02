@@ -13,7 +13,7 @@ require_once __DIR__ . '/DynamicClass.php';
  *
  * @see drupaloop_example_block_info()
  */
-abstract class DrupalBlock extends DynamicClass implements DynamicClassInterface {
+abstract class DrupalBlock extends DynamicClass implements DynamicClassInterface, ModuleDependencyInterface {
   use ModuleDependency;
 
   // Default block settings.
@@ -48,7 +48,7 @@ abstract class DrupalBlock extends DynamicClass implements DynamicClassInterface
    */
   public function getDelta() {
     $machine_name = $this->getMachineName();
-    $module_name = static::$module;
+    $module_name = $this->module()->getMachineName();
 
     if (strpos($machine_name, $module_name) === 0) {
       return substr($machine_name, strlen($module_name) + 1);
@@ -131,7 +131,7 @@ abstract class DrupalBlock extends DynamicClass implements DynamicClassInterface
     if (isset($values[$key]) && is_array($values[$key])) {
       foreach ($values[$key] as $field => $value) {
         $var = $this->formFieldVar($field);
-        DrupalModule::load($values['module'])->varSet($var, $value);
+        $this->module()->varSet($var, $value);
       }
     }
   }
@@ -146,7 +146,7 @@ abstract class DrupalBlock extends DynamicClass implements DynamicClassInterface
    *   The value of the block config var.
    */
   protected function getBlockVar($var) {
-    return static::module()->varGet($this->formFieldVar($var));
+    return $this->module()->varGet($this->formFieldVar($var));
   }
 
   /**

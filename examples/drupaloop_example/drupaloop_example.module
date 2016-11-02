@@ -60,7 +60,7 @@ function drupaloop_example_block_configure($delta = '') {
  * Implements hook_block_save().
  */
 function drupaloop_example_block_save($delta = '', $edit = array()) {
-  if ($block =DrupaloopExampleModule::load()->loadBlock($delta)) {
+  if ($block = DrupaloopExampleModule::load()->loadBlock($delta)) {
     $block->save($edit);
   }
 }
