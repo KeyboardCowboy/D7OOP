@@ -8,19 +8,14 @@
  * Remove all vowels from text.
  */
 class DrupaloopExampleDrupalCapFilter extends DrupalFilter {
-  /**
-   * {@inheritdoc}
-   */
-  public static function moduleName() {
-    return 'drupaloop_example';
-  }
+  use DrupaloopExampleTrait;
 
   /**
    * {@inheritdoc}
    */
   public function info() {
     return array(
-      'title' => t("Example: Capitalize Drupal!"),
+      'title' => t("Example: Capitalize Drupal!") . static::module()->customModuleMethod(),
       'description' => t("Capitalize all instances of Drupal."),
     );
   }
