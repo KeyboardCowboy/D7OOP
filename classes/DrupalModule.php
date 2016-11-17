@@ -142,13 +142,22 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
   }
 
   /**
+   * Wrapper around watchdog function.
+   *
+   * @see watchdog()
+   */
+  protected function watchdog($message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL) {
+    watchdog(get_called_class(), $message, $variables, $severity, $link);
+  }
+
+  /**
    * Throw a watchdog exception.
    *
    * @param \Exception $e
    *   The exception to report.
    */
   protected function watchdogException(Exception $e) {
-    watchdog_exception('drupaloop', $e);
+    watchdog_exception(get_called_class(), $e);
   }
 
 }
