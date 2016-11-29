@@ -18,6 +18,9 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
   // Register variable names and their default values.
   protected $variables = array();
 
+  // Allow for custom directory mapping.
+  protected static $dirMap = array();
+
   /**
    * {@inheritdoc}
    */
@@ -142,11 +145,83 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
   }
 
   /**
+   * Attach a file to a render array.
+   *
+   * @param array $build
+   *   The render array to attach to.
+   * @param string $filename
+   *   The name of the file within its like directory, including the extension.
+   * @param array $options
+   *   Options for the file attachment array.
+   */
+  public function attachFile(array &$build, $filename, array $options = array()) {
+    // Determine whether this is a local or external file.
+    $type = stripos($filename, 'http') === 0 ? 'external' : 'file';
+
+    // Determine extension.
+    $info = new SplFileInfo($filename);
+    $ext = $info->getExtension();
+
+    // Attach the file to the render array.
+    $build['#attached'][$ext][] = array(
+        'data' => $type === 'external' ? $filename : "{$this->path()}/{$ext}/{$filename}",
+        'type' => $type,
+      ) + $options;
+  }
+
+  /**
+   * Attach JS settings to a render array.
+   *
+   * @param array $build
+   *   The render array to attach to.
+   * @param array $settings
+   *   The settings.
+   */
+  public function attachJsSettings(array &$build, array $settings) {
+    $build['#attached']['js'][] = array(
+      'type' => 'setting',
+      'data' => array(
+        $this->getMachineName() => $settings,
+      ),
+    );
+  }
+
+  /**
+   * Attach a custom library to a render array.
+   *
+   * @param array $build
+   *   The render array to attach to.
+   * @param string $library_name
+   *   The library name as defined in hook_library().
+   * @param bool $every_page
+   *   TRUE to load the library on every page.
+   */
+  public function attachLibrary(array &$build, $library_name, $every_page = FALSE) {
+    $build['#attached']['library'][] = array(
+      $this->getMachineName(),
+      $library_name,
+      $every_page,
+    );
+  }
+
+  /**
+   * Attach an external library via the Libraries API.
+   *
+   * @param array $build
+   *   The render array to attach to.
+   * @param string $name
+   *   The name of the library.
+   */
+  public function attachLibraryApi(array &$build, $name) {
+    $build['#attached']['libraries_load'][] = array($name);
+  }
+
+  /**
    * Wrapper around watchdog function.
    *
    * @see watchdog()
    */
-  protected function watchdog($message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL) {
+  public function watchdog($message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL) {
     watchdog(get_called_class(), $message, $variables, $severity, $link);
   }
 
@@ -156,8 +231,21 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
    * @param \Exception $e
    *   The exception to report.
    */
-  protected function watchdogException(Exception $e) {
+  public function watchdogException(Exception $e) {
     watchdog_exception(get_called_class(), $e);
+  }
+
+  /**
+   * Get the directory for a given file extension.
+   *
+   * @param string $ext
+   *   A file extension.
+   *
+   * @return string
+   *   The directory where a file of this extension should be stored.
+   */
+  protected function getExtPath($ext) {
+    return isset(static::$dirMap[$ext]) ? static::$dirMap[$ext] : $ext;
   }
 
 }
