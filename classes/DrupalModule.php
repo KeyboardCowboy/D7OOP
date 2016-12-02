@@ -31,17 +31,31 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
   /**
    * Get the path to the module file.
    *
+   * @param string $filename
+   *   An optional filename to get the path for.
+   *
    * @return string
    *   The module path.
    */
-  public function path() {
+  public function path($filename = '') {
     static $path;
 
+    // Get the path to this module.
     if (empty($path)) {
       $path = drupal_get_path('module', $this->machineName);
     }
 
-    return $path;
+    // Lookup the relative path to the provided filename.
+    if (!empty($filename)) {
+      $ext = $this->getFileExtension($filename);
+      $ext_path = $this->getExtPath($ext);
+      $return_path = "{$path}/{$ext_path}/{$filename}";
+    }
+    else {
+      $return_path = $path;
+    }
+
+    return $return_path;
   }
 
   /**
@@ -159,8 +173,7 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
     $type = stripos($filename, 'http') === 0 ? 'external' : 'file';
 
     // Determine extension.
-    $info = new SplFileInfo($filename);
-    $ext = $info->getExtension();
+    $ext = $this->getFileExtension($filename);
 
     // Attach the file to the render array.
     $build['#attached'][$ext][] = array(
@@ -193,14 +206,11 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
    *   The render array to attach to.
    * @param string $library_name
    *   The library name as defined in hook_library().
-   * @param bool $every_page
-   *   TRUE to load the library on every page.
    */
-  public function attachLibrary(array &$build, $library_name, $every_page = FALSE) {
+  public function attachLibrary(array &$build, $library_name) {
     $build['#attached']['library'][] = array(
       $this->getMachineName(),
       $library_name,
-      $every_page,
     );
   }
 
@@ -246,6 +256,20 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
    */
   protected function getExtPath($ext) {
     return isset(static::$dirMap[$ext]) ? static::$dirMap[$ext] : $ext;
+  }
+
+  /**
+   * Get the extension of a file.
+   *
+   * @param string $filename
+   *   A full filename.
+   *
+   * @return string
+   *   The file extension.
+   */
+  protected function getFileExtension($filename) {
+    $info = new SplFileInfo($filename);
+    return $info->getExtension();
   }
 
 }
