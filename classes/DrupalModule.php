@@ -222,7 +222,7 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
    * @param string $name
    *   The name of the library.
    */
-  public function attachLibraryApi(array &$build, $name) {
+  public function attachExternalLibrary(array &$build, $name) {
     $build['#attached']['libraries_load'][] = array($name);
   }
 
