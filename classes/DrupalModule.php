@@ -15,11 +15,26 @@ require_once __DIR__ . '/DynamicClass.php';
  * Ex. Module 'awesome_sauce' has the class 'AwesomeSauceModule'
  */
 abstract class DrupalModule extends DynamicClass implements DynamicClassInterface {
-  // Register variable names and their default values.
+  /**
+   * Register system variables with default values.
+   *
+   * @var array
+   */
   protected $variables = array();
 
-  // Allow for custom directory mapping.
+  /**
+   * Allow for custom directory mapping.
+   *
+   * @var array
+   */
   protected static $dirMap = array();
+
+  /**
+   * The module .info.
+   *
+   * @var array
+   */
+  protected $info = array();
 
   /**
    * {@inheritdoc}
@@ -56,6 +71,17 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
     }
 
     return $return_path;
+  }
+
+  /**
+   * Get the module's name.
+   */
+  public function name() {
+    if (empty($this->info)) {
+      $this->loadInfo();
+    }
+
+    return $this->info['name'];
   }
 
   /**
@@ -270,6 +296,28 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
   protected function getFileExtension($filename) {
     $info = new SplFileInfo($filename);
     return $info->getExtension();
+  }
+
+  /**
+   * Load the contents of the module's .info file.
+   */
+  protected function loadInfo() {
+    $this->info = drupal_parse_info_file($this->path() . "/{$this->machineName}.info");
+  }
+
+  /**
+   * Get the name of a module.
+   *
+   * @param string $module
+   *   A module's machine name.
+   *
+   * @return string
+   *   The human readable name.
+   */
+  public static function moduleName($module) {
+    $info = drupal_parse_info_file(drupal_get_path('module', $module) . "/{$module}.info");
+
+    return isset($info) ? $info['name'] : '';
   }
 
 }
