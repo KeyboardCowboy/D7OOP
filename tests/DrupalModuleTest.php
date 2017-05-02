@@ -12,6 +12,9 @@ require_once __DIR__ . '/mocks/DrupalModuleMockModule.php';
  * Test the base DrupalModule class.
  */
 class DrupalModuleTest extends TestCase {
+  /**
+   * @var \DrupalModuleMockModule
+   */
   private $module;
 
   /**
@@ -93,6 +96,13 @@ class DrupalModuleTest extends TestCase {
     $this->module->deleteAllVars();
     $this->assertEquals('var1_value', $this->module->varGet(DrupalModuleMockModule::FIRST_VAR), 'Failed to delete all vars properly.');
     $this->assertEquals('var2_value', $this->module->varGet(DrupalModuleMockModule::SECOND_VAR), 'Failed to delete all vars properly.');
+  }
+
+  /**
+   * Test getting data from the info file.
+   */
+  public function testGetName() {
+    static::assertEquals('Drupal Mock Module', $this->module->name());
   }
 
 }

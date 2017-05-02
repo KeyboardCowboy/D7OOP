@@ -77,11 +77,9 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
    * Get the module's name.
    */
   public function name() {
-    if (empty($this->info)) {
-      $this->loadInfo();
-    }
+    $this->loadInfo();
 
-    return $this->info['name'];
+    return isset($this->info['name']) ? $this->info['name'] : '';
   }
 
   /**
@@ -302,7 +300,11 @@ abstract class DrupalModule extends DynamicClass implements DynamicClassInterfac
    * Load the contents of the module's .info file.
    */
   protected function loadInfo() {
-    $this->info = drupal_parse_info_file($this->path() . "/{$this->machineName}.info");
+    if (empty($this->info)) {
+      $this->info = drupal_parse_info_file($this->path() . "/{$this->machineName}.info");
+    }
+
+    return $this->info;
   }
 
   /**
@@ -363,8 +365,6 @@ trait ModuleDependency {
   /**
    * Override the default loader.
    *
-   * This
-   *
    * @param string $machine_name
    *   Instantiate an object by passing its machine name into static::load().
    *
@@ -374,25 +374,28 @@ trait ModuleDependency {
   public static function load($machine_name = NULL) {
     static $instance;
 
-    // Instantiate an object by its machine name.
-    if (!empty($machine_name)) {
-      try {
-        $class = static::getClass($machine_name);
-        return $class::load();
+    // Set a static machine name if one wasn't provided.
+    $machine_name = $machine_name ?: 'static';
+
+    if (!isset($instance[$machine_name])) {
+      if ($machine_name === 'static') {
+        $new_instance = new static();
+        $new_instance->setModule(DrupalModule::load(static::moduleName()));
+
+        $instance[$machine_name] = $new_instance;
       }
-      catch (DrupalOopMissingClassException $e) {
-        watchdog_exception('drupaloop', $e);
-      }
-    }
-    else {
-      // Instantiate this object.
-      if (!isset($instance)) {
-        $instance = new static();
-        $instance->setModule(DrupalModule::load(static::moduleName()));
+      else {
+        try {
+          $class = static::getClass($machine_name);
+          $instance[$machine_name] = $class::load();
+        }
+        catch (DrupalOopMissingClassException $e) {
+          watchdog_exception('drupaloop', $e);
+        }
       }
     }
 
-    return $instance;
+    return $instance[$machine_name];
   }
 
   /**

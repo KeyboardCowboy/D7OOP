@@ -18,4 +18,8 @@ class DrupalModuleMockModule extends DrupalModule {
     'var2' => 'var2_value',
   );
 
+  protected $info = array(
+    'name' => 'Drupal Mock Module',
+  );
+
 }
